@@ -1,0 +1,322 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "Customer Service API",
+    "description" : "API for Customer Domain Operations",
+    "termsOfService" : "https://github.com/symend-deployments/symend#copyright",
+    "contact" : {
+      "name" : "Symend",
+      "url" : "https://github.com/symend-deployments/symend",
+      "email" : "support@symend.com"
+    },
+    "version" : "v1"
+  },
+  "servers" : [ {
+    "url" : "https://localhost:8000/customer",
+    "description" : "local"
+  } ],
+  "security" : [ {
+    "JSON_Web_Token" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "CustomerTrail",
+    "description" : "Customer Trail"
+  } ],
+  "paths" : {
+    "/v1/accounts/customer-trail-events" : {
+      "get" : {
+        "tags" : [ "CustomerTrail", "sym-perm:ViewCustomerTrail" ],
+        "summary" : "Get Customer Trail events for an Account by Account Key",
+        "description" : "Returns a detailed list of Customer Trail Events for a specific Account, by Account Key",
+        "operationId" : "GetCustomerEventsByAccountKey",
+        "parameters" : [ {
+          "name" : "X-Sym-OrganizationId",
+          "in" : "header",
+          "description" : "Organization UUID of the client making the request",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid",
+            "example" : "51840c3a-4bb9-4b4a-b8d9-0ca1f93a76a7"
+          }
+        }, {
+          "name" : "searchParameter",
+          "in" : "query",
+          "description" : "Search Parameter",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/searchParameter"
+          }
+        }, {
+          "name" : "paging",
+          "in" : "query",
+          "description" : "Paging Criteria",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/GuidPagedMetadata"
+          }
+        }, {
+          "name" : "accountKey",
+          "in" : "query",
+          "description" : "This is the account key to be used to return related customer trail events",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CustomerTrailEventPagedModel"
+                },
+                "examples" : {
+                  "example-1" : {
+                    "value" : {
+                      "data" : [ {
+                        "name" : "Campaign Entered",
+                        "category" : "campaignActivities",
+                        "attributes" : {
+                          "accountSnapshotId" : "000b0000-0a0a-0242-1926-08dabd28522a",
+                          "campaignId" : "2035837D-CF7B-4330-847C-B44A5836E65E",
+                          "campaignName" : "NA Telco",
+                          "campaignDescription" : "Decsription of NA Telco",
+                          "dateTime" : "2022-11-02T23:16:50.1666091+00:00",
+                          "entryCondition" : "Reason why the campaign was assigned",
+                          "eventName" : "Campaign Entered",
+                          "eventCategory" : "campaignActivities"
+                        }
+                      } ],
+                      "meta" : {
+                        "limit" : 100,
+                        "cursor" : "000c0000-0a0a-0242-99bd-08da6b27925e",
+                        "direction" : "asc",
+                        "orderBy" : {
+                          "attribute" : "category"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CustomerTrailEventTypeCategory" : {
+        "type" : "string",
+        "default" : "unknown",
+        "enum" : [ "unknown", "accountUpdates", "emailActivities", "smsActivities", "playbookActivities", "campaignActivities", "landingPageActivities" ],
+        "x-examples" : {
+          "example-1" : "accountUpdates"
+        }
+      },
+      "AccountSearchOption" : {
+        "type" : "string",
+        "enum" : [ "Unknown", "AccountId", "AccountKey", "Email", "Phone" ]
+      },
+      "GuidPagedMetadata" : {
+        "type" : "object",
+        "properties" : {
+          "limit" : {
+            "type" : "integer",
+            "format" : "int32",
+            "default" : 100
+          },
+          "cursor" : {
+            "type" : "string",
+            "format" : "uuid",
+            "nullable" : true
+          },
+          "direction" : {
+            "type" : "string",
+            "nullable" : true,
+            "default" : "asc"
+          },
+          "orderBy" : {
+            "$ref" : "#/components/schemas/OrderBy"
+          }
+        },
+        "additionalProperties" : false,
+        "example" : {
+          "cursor" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "limit" : 0,
+          "orderBy" : {
+            "lastValue" : "lastValue",
+            "attribute" : "attribute"
+          },
+          "direction" : "asc"
+        }
+      },
+      "OrderBy" : {
+        "type" : "object",
+        "properties" : {
+          "attribute" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "lastValue" : {
+            "type" : "string",
+            "nullable" : true
+          }
+        },
+        "additionalProperties" : false,
+        "example" : {
+          "lastValue" : "lastValue",
+          "attribute" : "attribute"
+        }
+      },
+      "CustomerTrailEventModel" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "category" : {
+            "$ref" : "#/components/schemas/CustomerTrailEventTypeCategory"
+          },
+          "attributes" : {
+            "type" : "object",
+            "description" : "This is a dictionary as a Key Value where Key is a string and value is object"
+          },
+          "eventDate" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        },
+        "example" : {
+          "name" : "name",
+          "attributes" : { },
+          "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+          "category" : "unknown",
+          "eventDate" : "2000-01-23T04:56:07.000+00:00"
+        }
+      },
+      "CustomerTrailEventPagedModel" : {
+        "title" : "",
+        "required" : [ "data" ],
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomerTrailEventModel"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/GuidPagedMetadata"
+          }
+        },
+        "example" : {
+          "data" : [ {
+            "name" : "name",
+            "attributes" : { },
+            "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "category" : "unknown",
+            "eventDate" : "2000-01-23T04:56:07.000+00:00"
+          }, {
+            "name" : "name",
+            "attributes" : { },
+            "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "category" : "unknown",
+            "eventDate" : "2000-01-23T04:56:07.000+00:00"
+          } ],
+          "meta" : {
+            "cursor" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
+            "limit" : 0,
+            "orderBy" : {
+              "lastValue" : "lastValue",
+              "attribute" : "attribute"
+            },
+            "direction" : "asc"
+          }
+        }
+      },
+      "searchParameter" : {
+        "type" : "object",
+        "properties" : {
+          "startDate" : {
+            "type" : "string",
+            "format" : "Datetime",
+            "nullable" : true
+          },
+          "endDate" : {
+            "type" : "string",
+            "format" : "Datetime",
+            "nullable" : true
+          },
+          "category" : {
+            "type" : "string",
+            "nullable" : true
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "CustomerTrailSearchParameter" : {
+        "name" : "searchParameter",
+        "in" : "query",
+        "description" : "Search Parameter",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/searchParameter"
+        }
+      },
+      "PagingCriteria" : {
+        "name" : "paging",
+        "in" : "query",
+        "description" : "Paging Criteria",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "$ref" : "#/components/schemas/GuidPagedMetadata"
+        }
+      },
+      "X-Sym-OrganizationId" : {
+        "name" : "X-Sym-OrganizationId",
+        "in" : "header",
+        "description" : "Organization UUID of the client making the request",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "51840c3a-4bb9-4b4a-b8d9-0ca1f93a76a7"
+        }
+      }
+    },
+    "securitySchemes" : {
+      "JSON_Web_Token" : {
+        "type" : "http",
+        "description" : "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
+}

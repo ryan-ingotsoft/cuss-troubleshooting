@@ -1,0 +1,189 @@
+# GENERATE CLIENT
+# $ openapi-generator-cli generate -i assets/customer.v1.yaml -g csharp-netcore -o Symend.Client.Customer --additional-properties packageName=Symend.Client.Customer
+openapi: 3.0.1
+info:
+  title: Customer Service API
+  version: v1
+  description: API for Customer Domain Operations
+  contact:
+    name: Symend
+    url: 'https://github.com/symend-deployments/symend'
+    email: support@symend.com
+  termsOfService: 'https://github.com/symend-deployments/symend#copyright'
+servers:
+  - url: 'https://localhost:8000/customer'
+    description: local
+paths:
+  /v1/accounts/customer-trail-events:
+    get:
+      operationId: GetCustomerEventsByAccountKey
+      parameters:
+        - $ref: '#/components/parameters/X-Sym-OrganizationId'
+        - $ref: '#/components/parameters/CustomerTrailSearchParameter'
+        - $ref: '#/components/parameters/PagingCriteria'
+        - schema:
+            type: string
+          in: query
+          name: accountKey
+          required: true
+          description: This is the account key to be used to return related customer trail events
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerTrailEventPagedModel'
+              examples:
+                example-1:
+                  value:
+                    data:
+                      - name: Campaign Entered
+                        category: campaignActivities
+                        attributes:
+                          accountSnapshotId: 000b0000-0a0a-0242-1926-08dabd28522a
+                          campaignId: 2035837D-CF7B-4330-847C-B44A5836E65E
+                          campaignName: NA Telco
+                          campaignDescription: Decsription of NA Telco
+                          dateTime: '2022-11-02T23:16:50.1666091+00:00'
+                          entryCondition: Reason why the campaign was assigned
+                          eventName: Campaign Entered
+                          eventCategory: campaignActivities
+                    meta:
+                      limit: 100
+                      cursor: 000c0000-0a0a-0242-99bd-08da6b27925e
+                      direction: asc
+                      orderBy:
+                        attribute: category
+        '500':
+          description: Internal Server Error
+      tags:
+        - CustomerTrail
+        - 'sym-perm:ViewCustomerTrail'
+      description: 'Returns a detailed list of Customer Trail Events for a specific Account, by Account Key'
+      summary: Get Customer Trail events for an Account by Account Key
+    parameters: []
+components:
+  schemas:
+    CustomerTrailEventTypeCategory:
+      type: string
+      x-examples:
+        example-1: accountUpdates
+      enum:
+        - unknown
+        - accountUpdates
+        - emailActivities
+        - smsActivities
+        - playbookActivities
+        - campaignActivities
+        - landingPageActivities
+      default: unknown
+    AccountSearchOption:
+      type: string
+      enum:
+        - Unknown
+        - AccountId
+        - AccountKey
+        - Email
+        - Phone
+    GuidPagedMetadata:
+      type: object
+      properties:
+        limit:
+          type: integer
+          format: int32
+          default: 100
+        cursor:
+          type: string
+          format: uuid
+          nullable: true
+        direction:
+          type: string
+          default: asc
+          nullable: true
+        orderBy:
+          $ref: '#/components/schemas/OrderBy'
+      additionalProperties: false
+    OrderBy:
+      type: object
+      properties:
+        attribute:
+          type: string
+          nullable: true
+        lastValue:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CustomerTrailEventModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        category:
+          $ref: '#/components/schemas/CustomerTrailEventTypeCategory'
+        attributes:
+          type: object
+          description: This is a dictionary as a Key Value where Key is a string and value is object
+        eventDate:
+          type: string
+          format: date-time
+    CustomerTrailEventPagedModel:
+      type: object
+      title: ''
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerTrailEventModel'
+        meta:
+          $ref: '#/components/schemas/GuidPagedMetadata'
+      required:
+        - data
+  parameters:
+    CustomerTrailSearchParameter:
+      name: searchParameter
+      description: Search Parameter
+      in: query
+      schema:
+        type: object
+        properties:
+          startDate:
+            type: string
+            format: Datetime
+            nullable: true
+          endDate:
+            type: string
+            format: Datetime
+            nullable: true
+          category:
+            type: string
+            nullable: true
+    PagingCriteria:
+      name: paging
+      description: Paging Criteria
+      in: query
+      schema:
+        $ref: '#/components/schemas/GuidPagedMetadata'
+    X-Sym-OrganizationId:
+      name: X-Sym-OrganizationId
+      in: header
+      description: Organization UUID of the client making the request
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 51840c3a-4bb9-4b4a-b8d9-0ca1f93a76a7
+  securitySchemes:
+    JSON_Web_Token:
+      type: http
+      description: 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - JSON_Web_Token: []
+tags:
+  - name: CustomerTrail
+    description: Customer Trail

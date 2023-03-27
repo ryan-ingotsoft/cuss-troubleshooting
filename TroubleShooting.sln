@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Symend.Client.Customer", "Symend.Client.Customer\src\Symend.Client.Customer\Symend.Client.Customer.csproj", "{3C42C340-AF52-463E-9115-0B0581F5F859}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiClientSample", "ApiClientSample\ApiClientSample.csproj", "{76DB1914-5CEE-4955-B80B-D4A644F54620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "Symend.Server.Customer\src\IO.Swagger\IO.Swagger.csproj", "{67007558-FB74-4168-A767-B482E92ECE6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiSpec", "ApiSpec", "{9C5D770C-CC68-4C76-B0DE-2CABE62D116F}"
+	ProjectSection(SolutionItems) = preProject
+		customer.v1.yaml = customer.v1.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C42C340-AF52-463E-9115-0B0581F5F859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C42C340-AF52-463E-9115-0B0581F5F859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C42C340-AF52-463E-9115-0B0581F5F859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C42C340-AF52-463E-9115-0B0581F5F859}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76DB1914-5CEE-4955-B80B-D4A644F54620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76DB1914-5CEE-4955-B80B-D4A644F54620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76DB1914-5CEE-4955-B80B-D4A644F54620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76DB1914-5CEE-4955-B80B-D4A644F54620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67007558-FB74-4168-A767-B482E92ECE6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67007558-FB74-4168-A767-B482E92ECE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67007558-FB74-4168-A767-B482E92ECE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67007558-FB74-4168-A767-B482E92ECE6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
